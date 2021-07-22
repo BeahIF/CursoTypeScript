@@ -16,6 +16,16 @@
 // button?.addEventListener('click',()=>{
 //     console.log('Clicked!')
 // })
+//Drag e Drop Interfaces
+interface Draggable {
+    dragStartHandler(event:DragEvent):void
+    dragEndHandler(event:DragEvent):void
+}
+interface DragTarget{
+    dragOverHandler(event:DragEvent):void
+    dropHandler(event:DragEvent):void
+    dragLeaveHandler(event:DragEvent):void
+}
 //Project Type
 enum ProjectStatus { Active }
 class Project {
@@ -117,7 +127,7 @@ abstract class Component<T extends HTMLElement, U extends HTMLElement> {
         if(newElementId){
             this.element.id = newElementId
         }
-        this.attach();
+        this.attach(insertAtStart);
     }
     private attach(insertAtBeginning:boolean){
         this.hostElement.insertAdjacentElement(insertAtBeginning ? 'afterbegin':'beforeend',this.element)
@@ -126,24 +136,43 @@ abstract class Component<T extends HTMLElement, U extends HTMLElement> {
     abstract renderContent():void;
 }
 //ProjectsItem Class
-class ProjectItem extends Component<HTMLUListElement, HTMLLIElement> {
+class ProjectItem extends Component<HTMLUListElement, HTMLLIElement> implements Draggable{
     private project: Project;
+    get persons(){
+        if(this.project.people === 1){
+            return '1 person'
+        }else{
+            return `${this.project.people} persons`
+        }
+    }
     constructor(hostId: string, project:Project){
         super('single-project', hostId,false,project.id)
         this.project =project
         this.configure();
         this.renderContent();
     }
-    configure(){}
+    @autobind
+    dragStartHandler(event:DragEvent){
+
+    }
+    dragEndHandler(event:DragEvent){
+
+    }
+    configure(){
+        this.element.addEventListener('dragstart',this.dragStartHandler)
+        this.element.addEventListener('dragend', this.dragEndHandler)
+    }
     renderContent(){
         this.element.querySelector('h2')!.textContent = this.project.title;
-        this.element.querySelector('h3')!.textContent = this.project.people.toString();
+        // this.element.querySelector('h3')!.textContent = this.project.people.toString()+'assigned';
+        this.element.querySelector('h3')!.textContent = this.persons+'assigned';
+
         this.element.querySelector('p')!.textContent = this.project.description;
 
     }
 }
 //ProjectInputClass
-class ProjectList extends Component<HTMLDivElement, HTMLElement>{
+class ProjectList extends Component<HTMLDivElement, HTMLElement> implements DragTarget{
     // templateElement: HTMLTemplateElement;
     // hostElement:HTMLDivElement;
     // element:HTMLElement;
@@ -186,7 +215,7 @@ class ProjectList extends Component<HTMLDivElement, HTMLElement>{
             // const listItem = document.createElement('li')
             // listItem.textContent = prjItem.title
             // listEl.appendChild(listItem)
-            new ProjectItem(this.element.id, prjItem)
+            new ProjectItem(this.element.querySelector('ul')!.id, prjItem)
         }
 
     }

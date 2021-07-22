@@ -1,0 +1,12 @@
+.projects li{
+    box-shadow:1px 1px 8px rgba(0,0,0,0,0.26);
+    padding:1rem;
+
+}
+.project li p {
+    margin:0
+}
+.droppable{
+    background: #ffe3ee;
+}
+

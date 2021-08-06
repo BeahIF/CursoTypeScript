@@ -67,6 +67,19 @@ class ProjectState extends State<Project>{
             ProjectStatus.Active
         }
         this.projects.push(newProject)
+        // for(const listenerFn of this.listeners){
+        //     listenerFn(this.projects.slice())
+        // }]
+        this.
+    }
+    moveProject(projectId : String, newStatus:ProjectStatus){
+        const project = this.projects.find(prj => prj.id === projectId)
+        if(project){
+            projectState.status = newStatus
+        }
+
+    }
+    private updateListeners(){
         for(const listenerFn of this.listeners){
             listenerFn(this.projects.slice())
         }
@@ -153,10 +166,12 @@ class ProjectItem extends Component<HTMLUListElement, HTMLLIElement> implements 
     }
     @autobind
     dragStartHandler(event:DragEvent){
+        event.dataTransfer!.setData('text/plain', this.project.id)
+        event.dataTransfer!.effectAllowed = 'move'
 
     }
-    dragEndHandler(event:DragEvent){
-
+    dragEndHandler(_:DragEvent){
+        console.log('DragEnd')
     }
     configure(){
         this.element.addEventListener('dragstart',this.dragStartHandler)
@@ -188,7 +203,31 @@ class ProjectList extends Component<HTMLDivElement, HTMLElement> implements Drag
             this.configure()
             this.renderContent()
         }
+        @autobind
+        dragOverHandler(event:DragEvent){
+            if(event.dataTransfer && event.dataTransfer.types[0])
+            const listEl = this.element.querySelector('ul');
+            listEl?.classList.add('droppable')
+
+        }
+        dropHandler(event:DragEvent){
+            const prjId = (event.dataTransfer!.getData('txt/plain'))
+            projectSstate.moveProject(
+                prjId,
+                this.type == 'active' ? ProjectStatus.Active : ProjectStatus.Active:ProjectStatus.Finished
+            )
+        }
+        @autobind
+        dragLeaveHandler(_:DragEvent){
+            const listEl =  this.element.querySelector('ul')
+            listEl?.classList.remove('droppable')
+        }
         configure(){
+            this.element.addEventListener('dragover', this.dragOverHandler)
+            this.element.addEventListener('dragleave', this.dragLeaveHandler)
+            this.element.addEventListener('drop', this.dropHandler)
+
+
             projectState.addListener((project:Project[])=>{
                 const rerlevantProjects = projects.filter(prj =>{
                     if(this.type === 'active'){

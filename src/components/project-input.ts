@@ -1,10 +1,13 @@
-/// <reference path="base-component.ts"/>
-/// <reference path="../decorators/autobind.ts"/>
-/// <reference path="../util/autobind.ts"/>
-/// <reference path="../models/drag-drop.ts"/>
+// / <reference path="base-component.ts"/>
+// / <reference path="../decorators/autobind.ts"/>
+// / <reference path="../util/autobind.ts"/>
+// / <reference path="../models/drag-drop.ts"/>
 
-
-namespace App{
+import { Component } from './base-components'
+import  * as Validation  from '../util/validation'
+import { autobind } from '../decorators/autobind'
+import { projectState } from '../state/project-state'
+// namespace App{
     
  export class ProjectInput extends Component<HTMLDivElement, HTMLFormElement>{
     // templateElement : HTMLTemplateElement;
@@ -35,27 +38,30 @@ namespace App{
         const enteredTitle = this.titleInputElement.value;
         const enteredDescription = this.descriptionInputElement.value;
         const enteredPeople = this.peopleInputElement.value;
-        const titleValidatable : Validatable = {
+        const titleValidatable : Validation.Validatable = {
             value:enteredTitle,
             required:true
         };
-        const descriptionValidatable : Validatable = {
+        const descriptionValidatable : Validation.Validatable = {
             value:enteredDescription,
             required:true,
             minLength:5
         };
-        const peopleValidatable : Validatable = {
+        const peopleValidatable : Validation.Validatable = {
             value:+enteredPeople,
             required:true,
             min:1
         };
 
-        if(validate({value:enteredTitle,required:true,minLength:5})&&
-        validate({value:enteredDescription,required:true, minLength:5})&&
+        // if(validate({value:enteredTitle,required:true,minLength:5})&&
+        // validate({value:enteredDescription,required:true, minLength:5})&&
 
             // enteredTitle.trim().length === 0 || enteredDescription.trim().length === 0
-        || enteredPeople.trim().length === 0){
-            alert('Invalid input,please try again!')
+        // || enteredPeople.trim().length === 0){
+        if(!Validation.validate(titleValidatable)||!Validation.validate(descriptionValidatable)||
+        !Validation.validate(peopleValidatable)){
+               alert('Invalid input,please try again!')
+               return
         }else{
             return [enteredTitle,enteredDescription, +enteredPeople]
         }
@@ -85,4 +91,4 @@ namespace App{
     }
 }
 
-}
+// }

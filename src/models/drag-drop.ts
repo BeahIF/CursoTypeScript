@@ -1,4 +1,4 @@
-namespace App{
+// namespace App{
 //Drag e Drop Interfaces
 interface Draggable {
     dragStartHandler(event:DragEvent):void
@@ -9,4 +9,4 @@ interface DragTarget{
     dropHandler(event:DragEvent):void
     dragLeaveHandler(event:DragEvent):void
 }
-}
+// }

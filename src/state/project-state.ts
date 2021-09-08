@@ -1,6 +1,6 @@
-namespace App{
+// namespace App{
     //Project State Management
-
+import { Project } from '../models/project.js'
 export class ProjectState extends State<Project>{
     // private listeners: any[] =[]
     private projects:any[] = [];
@@ -48,4 +48,4 @@ export class ProjectState extends State<Project>{
 }
 const projectState =  new ProjectState.getInstance()
 
-}
+// }
